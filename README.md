@@ -1,10 +1,10 @@
 # CineReserve-API
 The CineReserve API is a high-performance, scalable RESTful backend designed to manage the complexities of modern cinema operations
-# 🎬 CineReserve API
+# CineReserve API
 
 The CineReserve API is a high-performance, scalable RESTful backend designed to manage the complexities of modern cinema operations (specifically designed for *Cinépolis Natal*). Built with Python, Django REST Framework, PostgreSQL, and Redis, it handles high-concurrency ticket reservations with temporary distributed locks.
 
-## 🚀 Technologies Used
+## Technologies Used
 * **Language:** Python 3.12
 * **Framework:** Django 5 & Django REST Framework (DRF)
 * **Database:** PostgreSQL 16
@@ -16,7 +16,7 @@ The CineReserve API is a high-performance, scalable RESTful backend designed to 
 
 ---
 
-## ⚙️ How to Run the Project (Locally)
+## How to Run the Project (Locally)
 
 This project uses Docker to provide a seamless "plug-and-play" experience. You do not need to install Python, PostgreSQL, or Redis on your local machine—Docker handles everything.
 
