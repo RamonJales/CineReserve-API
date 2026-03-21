@@ -1,0 +1,61 @@
+# Git e versionamento (nunca enviar pro container)
+.git
+.gitignore
+.gitattributes
+.github
+
+# Ambientes virtuais (já instalamos deps no Docker)
+.venv
+venv
+env
+.env
+.env.*
+!.env.example          # ← útil copiar exemplo, mas NUNCA o .env real
+
+# Python compilados / cache (gerados em tempo de execução)
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.eggs/
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Django específicos
+*.log
+*.sqlite3              # banco local de dev (use postgres no container)
+migrations/__pycache__/
+staticfiles/           # gerado em collectstatic no container ou CI
+media/                 # uploads → use volume separado
+collectstatic/
+
+# IDE / editor files
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Docker e compose (evita loop ou cópia desnecessária)
+Dockerfile*
+docker-compose*
+*.md                   # README, docs → opcional, mas economiza
+
+# Testes e artifacts
+tests/__pycache__/
+.coverage.*
+htmlcov/
+junit/
+
+# Outros comuns
+node_modules/          # se tiver frontend
+dist/
+build/
+*.bak
+*.tmp
