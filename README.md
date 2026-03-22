@@ -1,6 +1,5 @@
 # CineReserve-API
 The CineReserve API is a high-performance, scalable RESTful backend designed to manage the complexities of modern cinema operations
-# CineReserve API
 
 The CineReserve API is a high-performance, scalable RESTful backend designed to manage the complexities of modern cinema operations (specifically designed for *Cinépolis Natal*). Built with Python, Django REST Framework, PostgreSQL, and Redis, it handles high-concurrency ticket reservations with temporary distributed locks.
 
@@ -9,7 +8,7 @@ The CineReserve API is a high-performance, scalable RESTful backend designed to 
 * **Framework:** Django 5 & Django REST Framework (DRF)
 * **Database:** PostgreSQL 16
 * **Cache & Locks:** Redis 7
-* **Task Queue:** Celery *(Upcoming)*
+* **Task Queue:** Celery
 * **Containerization:** Docker & Docker Compose
 * **Dependency Management:** Poetry
 * **CI/CD:** GitHub Actions (Ruff, Pytest, Coverage)
@@ -26,7 +25,7 @@ This project uses Docker to provide a seamless "plug-and-play" experience. You d
 
 ### Step 1: Clone the repository
 ```bash
-$ git clone [https://github.com/your-username/cine-reserve-api.git](https://github.com/your-username/cine-reserve-api.git)
+$ git clone https://github.com/RamonJales/cine-reserve-api.git
 
 $ cd cine-reserve-api
 ```
@@ -74,6 +73,7 @@ docker compose exec web python manage.py createsuperuser
 
 - Base API URL: http://localhost:8000/api/
 - Admin Panel: http://localhost:8000/admin/
+- Swagger: http://localhost:8000/api/docs/
 
 ### Populating the Database & End-to-End Testing
 
@@ -113,6 +113,12 @@ To run the automated test suite (Pytest) and check coverage inside the container
 docker compose exec web pytest --cov
 ```
 
+Outside container, with poetry:
+
+```bash
+DATABASE_URL="sqlite:///db.sqlite3" poetry run pytest --cov
+```
+
 ### Code Quality (Linting & Formatting)
 
 We use ruff to maintain strict code quality:
@@ -120,4 +126,11 @@ We use ruff to maintain strict code quality:
 ```bash
 $ docker compose exec web ruff check .
 $ docker compose exec web ruff format .
+```
+
+Outside container:
+```bash
+$ poetry run ruff check .
+$ poetry run ruff check --fix
+$ poetry run ruff format .
 ```

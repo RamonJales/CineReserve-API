@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 
 from cinema.models import Seat, Session
 from ticketing.models import Ticket
+from ticketing.tasks import send_ticket_confirmation
 
 redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
 
@@ -57,6 +58,15 @@ def checkout_ticket(user_id: int, session_id: int, seat_id: int) -> Ticket:
         with transaction.atomic():
             ticket = Ticket.objects.create(user_id=user_id, session_id=session_id, seat_id=seat_id)
             redis_client.delete(lock_key)
+
+            transaction.on_commit(
+                lambda: send_ticket_confirmation.delay(
+                    str(ticket.id),
+                    ticket.user.email,
+                    ticket.session.movie.title,
+                    ticket.session.start_time.strftime("%d/%m/%Y %H:%M"),
+                )
+            )
 
             return ticket
 

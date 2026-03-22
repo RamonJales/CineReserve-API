@@ -34,5 +34,18 @@ services:
       - db
       - redis
 
+  celery:
+    build: .
+    container_name: cinereserve_celery
+    command: celery -A core worker -l INFO
+    volumes:
+      - .:/app
+      - /app/.venv
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+
 volumes:
   postgres_data:
