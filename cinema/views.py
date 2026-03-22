@@ -31,5 +31,8 @@ class SessionViewSet(viewsets.ReadOnlyModelViewSet):
     def seat_map(self, request, pk=None):
         """Seat Map Visualization per movie session"""
         session = self.get_object()
-        seat_map_data = get_session_seat_map(session.id)
+
+        current_user_id = request.user.id
+
+        seat_map_data = get_session_seat_map(session.id, current_user_id=current_user_id)
         return Response(seat_map_data)
