@@ -16,7 +16,8 @@ dependencies = [
     "djangorestframework-simplejwt (>=5.5.1,<6.0.0)",
     "gunicorn (>=25.1.0,<26.0.0)",
     "drf-spectacular (>=0.29.0,<0.30.0)",
-    "environs[django] (>=14.6.0,<15.0.0)"
+    "environs[django] (>=14.6.0,<15.0.0)",
+    "pytest (>=9.0.2,<10.0.0)"
 ]
 
 

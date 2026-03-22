@@ -1,21 +1,24 @@
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
 
 from .models import Movie, Session
-from .serializers import MovieSerializer, SessionSerializer
 from .selectors import get_session_seat_map
+from .serializers import MovieSerializer, SessionSerializer
+
 
 class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     """List all movies available"""
+
     queryset = Movie.objects.all().order_by("-release_date")
     serializer_class = MovieSerializer
     permission_classes = [AllowAny]
 
+
 class SessionViewSet(viewsets.ReadOnlyModelViewSet):
     """List sessions (can filter by movie_id)"""
+
     queryset = Session.objects.all().select_related("movie", "room").order_by("start_time")
     serializer_class = SessionSerializer
     permission_classes = [AllowAny]

@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import Ticket
+
 
 class TicketSerializer(serializers.ModelSerializer):
     movie_title = serializers.CharField(source="session.movie.title", read_only=True)
@@ -10,12 +12,4 @@ class TicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = (
-            "id", 
-            "movie_title", 
-            "room_name", 
-            "start_time", 
-            "row", 
-            "number", 
-            "purchased_at"
-        )
+        fields = ("id", "movie_title", "room_name", "start_time", "row", "number", "purchased_at")

@@ -51,7 +51,7 @@ REDIS_URL=redis://redis:6379/0
 Start the API, Database, and Redis cache in detached mode:
 
 ```bash
-$ docker-compose up --build -d
+$ docker compose up --build -d
 ```
 
 ### Step 4: Run Database Migrations
@@ -59,7 +59,7 @@ $ docker-compose up --build -d
 Apply the initial migrations to construct the PostgreSQL schema:
 
 ```bash
-docker-compose exec web python manage.py migrate
+docker compose exec web python manage.py migrate
 ```
 
 ### Step 5: Create a Superuser (Optional but recommended)
@@ -67,7 +67,7 @@ docker-compose exec web python manage.py migrate
 Create an admin account to access the Django Admin panel:
 
 ```bash
-docker-compose exec web python manage.py createsuperuser
+docker compose exec web python manage.py createsuperuser
 ```
 
 ### Step 6: Access the API
@@ -75,12 +75,42 @@ docker-compose exec web python manage.py createsuperuser
 - Base API URL: http://localhost:8000/api/
 - Admin Panel: http://localhost:8000/admin/
 
+### Populating the Database & End-to-End Testing
+
+To properly test the API, you need data. We have included a custom Django management command to generate a test movie, room, and seating arrangement, alongside a robust Bash script that simulates a full user journey.
+
+Seed the Database
+
+Populate your local database with initial testing data (Movie, Room, Session, and Seats):
+
+```bash
+docker compose exec web python manage.py seed_cinema
+```
+
+Run the End-to-End (E2E) Test
+
+We provide a Bash script (`e2e_test.sh`) that tests the entire flow: User Registration -> Login (JWT) -> Fetch Catalog -> Check Seat Map -> Acquire Redis Lock -> Checkout.
+
+First, make the script executable:
+
+```bash
+chmod +x e2e_test.sh
+```
+
+Then, run the script:
+
+```bash
+./e2e_test.sh
+```
+
+**Note**: The script relies on `jq` to parse JSON responses. Ensure `jq` is installed on your local machine.
+
 ### Running Tests
 
 To run the automated test suite (Pytest) and check coverage inside the container:
 
 ```bash
-docker-compose exec web pytest --cov
+docker compose exec web pytest --cov
 ```
 
 ### Code Quality (Linting & Formatting)
@@ -88,6 +118,6 @@ docker-compose exec web pytest --cov
 We use ruff to maintain strict code quality:
 
 ```bash
-$ docker-compose exec web ruff check .
-$ docker-compose exec web ruff format .
+$ docker compose exec web ruff check .
+$ docker compose exec web ruff format .
 ```

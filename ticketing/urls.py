@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import ReserveSeatView, CheckoutView, MyTicketsListView
+
+from .views import CheckoutView, MyTicketsListView, ReserveSeatView
 
 urlpatterns = [
     path("reserve/", ReserveSeatView.as_view(), name="reserve-seat"),
