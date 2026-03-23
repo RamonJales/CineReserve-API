@@ -14,6 +14,7 @@ from datetime import timedelta
 from pathlib import Path
 
 from environs import Env
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +31,7 @@ SECRET_KEY = "django-insecure-eff9m5q^--_)m-f(m3!(tt7=cg@k31a=h-by@87t1-*a8j59ma
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
