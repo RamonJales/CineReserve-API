@@ -1,0 +1,54 @@
+services:
+  # 1. A API Web (Gunicorn)
+  - type: web
+    name: cinereserve-api
+    env: docker
+    plan: free
+    region: ohio
+    dockerContext: .
+    dockerCommand: gunicorn core.wsgi:application --bind 0.0.0.0:10000 --workers 2
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cinereserve-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: cinereserve-redis
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+
+  # 2. O Worker do Celery
+  - type: worker
+    name: cinereserve-worker
+    env: docker
+    plan: free
+    region: ohio
+    dockerContext: .
+    dockerCommand: celery -A core worker -l INFO
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cinereserve-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: cinereserve-redis
+          property: connectionString
+
+# 3. O Banco de Dados Postgres
+databases:
+  - name: cinereserve-db
+    plan: free
+    region: ohio
+
+# 4. O Redis (para Locks e Celery)
+redis:
+  name: cinereserve-redis
+  plan: free
+  region: ohio
