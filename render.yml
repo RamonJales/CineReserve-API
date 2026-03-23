@@ -1,5 +1,5 @@
 services:
-  # 1. A API Web (Gunicorn)
+  # 1. API Web (Gunicorn)
   - type: web
     name: cinereserve-api
     env: docker
@@ -22,7 +22,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
 
-  # 2. O Worker do Celery
+  # 2. Celery
   - type: worker
     name: cinereserve-worker
     env: docker
@@ -41,14 +41,14 @@ services:
           name: cinereserve-redis
           property: connectionString
 
-# 3. O Banco de Dados Postgres
+  # 4. O Redis (Locks and Celery)
+  - redis:
+    name: cinereserve-redis
+    plan: free
+    region: ohio
+
+# 3. Database
 databases:
   - name: cinereserve-db
     plan: free
     region: ohio
-
-# 4. O Redis (para Locks e Celery)
-redis:
-  name: cinereserve-redis
-  plan: free
-  region: ohio
