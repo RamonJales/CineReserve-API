@@ -6,12 +6,14 @@ The CineReserve API is a high-performance, scalable RESTful backend designed to 
 ## Technologies Used
 * **Language:** Python 3.12
 * **Framework:** Django 5 & Django REST Framework (DRF)
+* **WSGI HTTP Server:** Gunicorn (Production-ready with 4 workers)
 * **Database:** PostgreSQL 16
 * **Cache & Locks:** Redis 7
 * **Task Queue:** Celery
 * **Containerization:** Docker & Docker Compose
 * **Dependency Management:** Poetry
 * **CI/CD:** GitHub Actions (Ruff, Pytest, Coverage)
+* **Locust**
 
 ---
 
@@ -47,7 +49,7 @@ REDIS_URL=redis://redis:6379/0
 
 ### Step 3: Build and Run the Containers
 
-Start the API, Database, and Redis cache in detached mode:
+Start the API(running on Gunicorn), Database, and Redis cache in detached mode:
 
 ```bash
 $ docker compose up --build -d
@@ -134,3 +136,24 @@ $ poetry run ruff check .
 $ poetry run ruff check --fix
 $ poetry run ruff format .
 ```
+
+## High-Concurrency & Load Testing (Locust)
+
+To prove the reliability of the **Redis Distributed Lock**, we implemented a stress test using [Locust](https://locust.io/). 
+
+The scenario simulates a highly anticipated movie premiere where multiple concurrent users attempt to reserve the exact same seat (Seat A1) in the exact same millisecond.
+
+Because the Docker container runs on Gunicorn (handling requests via multi-threading/multi-processing), the requests actually reach the application layer simultaneously, pushing the system to its limits.
+
+### Running the Load Test
+1. Seed the database: `docker compose exec web python manage.py seed_cinema`
+2. Start Locust: `poetry run locust -f load_tests/locustfile.py --host=http://localhost:8000`
+3. Open `http://localhost:8089`, set Users to `50` and Spawn Rate to `10`, and start the swarm.
+
+### The Results (Zero Race Conditions)
+Because we implemented atomic `SET NX EX` locks in Redis via our Service layer, the API perfectly handles the massive spike. 
+* **Successes:** Exactly `1` request returns `HTTP 200 OK`.
+* **Failures:** The remaining  requests are successfully intercepted by the lock and safely return `HTTP 400 Bad Request` ("Seat already reserved") without touching the PostgreSQL database.
+* **Database Integrity:** Zero double-bookings.
+
+    ![locust image](docs/images/locust1.png)
